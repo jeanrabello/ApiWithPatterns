@@ -1,0 +1,36 @@
+{
+	"name": "api",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"dev": "nodemon --inspect=4444 ./src/app/server.js",
+		"migrate": "sequelize-cli db:migrate --migrations-path src/database/migrations/",
+		"migrate-undo": "sequelize db:migrate:undo --migrations-path src/database/migrations/",
+		"migrate-undo-all": "sequelize db:migrate:undo:all --migrations-path src/database/migrations/",
+		"seed": "sequelize-cli db:seed:all --seeders-path src/database/seeds/",
+		"seed-undo": "sequelize-cli db:seed:undo --seeders-path src/database/seeds/",
+		"seed-undo-all": "sequelize-cli db:seed:undo:all --seeders-path src/database/seeds/",
+		"db": "sequelize-cli db:migrate --migrations-path src/database/migrations/ && sequelize-cli db:seed:all --seeders-path src/database/seeds/"
+	},
+	"dependencies": {
+		"bcryptjs": "^2.4.3",
+		"cls-hooked": "^4.2.2",
+		"cors": "^2.8.5",
+		"dotenv": "^16.0.3",
+		"express": "^4.18.2",
+		"jsonwebtoken": "^8.5.1",
+		"multer": "^1.4.5-lts.1",
+		"mysql2": "^3.2.0",
+		"on-finished": "^2.4.1",
+		"pg": "^8.8.0",
+		"pg-hstore": "^2.3.4",
+		"sequelize": "^6.27.0",
+		"uuid": "^9.0.0"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.20",
+		"sequelize-cli": "^6.5.2",
+		"sucrase": "^3.25.0"
+	}
+}
