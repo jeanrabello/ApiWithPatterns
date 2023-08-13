@@ -1,17 +1,22 @@
-import SessionRepository from '../repositories/SessionRepository.js';
+import AbstractController from '../abstract/AbstractController.js';
+import LoginFactory from '../../packages/Sessions/factories/LoginFactory.js';
+import User from '../domains/User.js';
 
-class SessionController {
+class SessionController extends AbstractController {
 	constructor() {
-		this.create = this.create.bind(this);
-		this.delete = this.delete.bind(this);
+		super();
+		this.login = this.login.bind(this);
 	}
 
-	async create(req, res) {
-		return await SessionRepository.create(req);
-	}
-
-	async delete(req, res) {
-		return await SessionRepository.delete(req);
+	async login(req, res) {
+		try {
+			let user = new User(req.body);
+			const factory = new LoginFactory();
+			const result = await factory.execute(user);
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
+		}
 	}
 }
 

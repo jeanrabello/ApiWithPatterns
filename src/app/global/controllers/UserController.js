@@ -1,11 +1,18 @@
-import CreateUserFactory from '../../packages/Users/factories/CreateUserFactory';
-import UpdateUserFactory from '../../packages/Users/factories/UpdateUserFactory';
-import UpdateUserPasswordFactory from '../../packages/Users/factories/UpdateUserPasswordFactory';
+import AbstractController from '../abstract/AbstractController';
+import { User } from '../domains';
+import {
+	CreateUserFactory,
+	DeleteUserLogicallyFactory,
+	GetUserByCpfFactory,
+	GetUserByIdFactory,
+	UpdateUserFactory,
+	UpdateUserPasswordFactory,
+} from '../../packages/Users/factories';
 import UserRepository from '../repositories/UserRepository';
-import SessionController from './SessionController';
 
-class UserController {
+class UserController extends AbstractController {
 	constructor() {
+		super();
 		this.create = this.create.bind(this);
 		this.getById = this.getById.bind(this);
 		this.getByCpf = this.getByCpf.bind(this);
@@ -14,62 +21,104 @@ class UserController {
 		this.updatePassword = this.updatePassword.bind(this);
 	}
 
-	async create(data) {
-		let parsedData = JSON.parse(data.body.userInfo);
-		const factory = new CreateUserFactory(parsedData);
-		await factory.execute();
+	async create(req, res, next) {
+		try {
+			let parsedData = JSON.parse(req.body.userInfo);
+			let user = new User({
+				...parsedData,
+				fileName: req.file ? req.file.originalname : '',
+				filePath: req.file ? req.file.path : '',
+			});
 
-		if (data.file) {
-			parsedData['fileName'] = data.file.originalname;
-			parsedData['filePath'] = data.file.path;
+			const factory = new CreateUserFactory();
+			const result = await factory.execute(user, {
+				userId: req.userId,
+				isAdmin: req.isAdmin,
+			});
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
 		}
-
-		return await UserRepository.createUser(parsedData);
 	}
 
-	async update(data) {
-		const factory = new UpdateUserFactory(data);
-		await factory.execute();
+	async update(req, res, next) {
+		try {
+			let parsedData = JSON.parse(req.body.userInfo);
+			let user = new User({
+				id: req.userId,
+				...parsedData,
+				fileName: req.file ? req.file.originalname : '',
+				filePath: req.file ? req.file.path : '',
+			});
 
-		return await UserRepository.updateUser(data);
-	}
-
-	async updatePassword(data) {
-		const factory = new UpdateUserPasswordFactory(data);
-		await factory.execute();
-
-		return await UserRepository.updatePassword(data);
-	}
-
-	async deleteLogically(data) {
-		if (!data.userId) {
-			throw new Error('You need to send the required informations.');
+			const factory = new UpdateUserFactory();
+			const result = await factory.execute(user, {
+				userId: req.userId,
+				isAdmin: req.isAdmin,
+			});
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
 		}
-
-		await UserRepository.deleteLogically(data.userId);
-		await SessionController.delete(data);
-
-		return null;
 	}
 
-	async getById(data) {
-		const id = data.body.id || data.params.id;
+	async updatePassword(req, res, next) {
+		try {
+			let user = new User(req.body);
+			user.newPassword = req.body.newPassword || '';
+			user.passwordConfirmation = req.body.passwordConfirmation || '';
 
-		if (!id) {
-			throw new Error('ID not informed');
+			const factory = new UpdateUserPasswordFactory();
+			const result = await factory.execute(user, {
+				userId: req.userId,
+			});
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
 		}
-
-		return await UserRepository.getById(id);
 	}
 
-	async getByCpf(data) {
-		const cpf = data.body.cpf || data.params.cpf;
+	async deleteLogically(req, res, next) {
+		try {
+			let user = new User(req.body);
 
-		if (!cpf) {
-			throw new Error('Cpf not informed');
+			const factory = new DeleteUserLogicallyFactory();
+			const result = await factory.execute(user, {
+				userId: req.userId,
+				isAdmin: req.isAdmin,
+			});
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
 		}
+	}
 
-		return await UserRepository.getByCpf(cpf);
+	async getById(req, res, next) {
+		try {
+			let user = new User({
+				id: req.params.id,
+			});
+
+			const factory = new GetUserByIdFactory();
+			const result = await factory.execute(user);
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
+		}
+	}
+
+	async getByCpf(req, res, next) {
+		try {
+			let user = new User({
+				cpf: req.body.cpf,
+			});
+
+			const factory = new GetUserByCpfFactory();
+			const result = await factory.execute(user);
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
+		}
 	}
 }
 

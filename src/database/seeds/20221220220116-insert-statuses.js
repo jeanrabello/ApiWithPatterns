@@ -19,6 +19,11 @@ module.exports = {
 					code: 'INA',
 					description: 'Inativo',
 				},
+				{
+					id: uuid.v4(),
+					code: 'SUS',
+					description: 'Suspenso',
+				},
 			],
 			{}
 		);
@@ -30,7 +35,7 @@ module.exports = {
 			[
 				{
 					code: {
-						[Op.in]: ['ATI', 'INA'],
+						[Op.in]: ['ATI', 'INA', 'SUS'],
 					},
 				},
 			],

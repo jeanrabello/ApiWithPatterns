@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import Facade from '../../global/controllers/Facade';
+import controller from '../../global/controllers/AdministratorController';
 
-const facade = new Facade();
 const adminRoutes = Router();
 
-adminRoutes.post('/', facade.create);
-adminRoutes.get('/:userId', facade.getByUserId);
-adminRoutes.delete('/:userId', facade.deleteLogically);
+adminRoutes.post('/', controller.create);
+adminRoutes.get('/:userId', controller.getByUserId);
+adminRoutes.delete('/:userId', controller.deleteLogically);
 
 export default adminRoutes;

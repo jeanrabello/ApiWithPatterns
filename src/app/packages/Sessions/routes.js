@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import Facade from '../../global/controllers/Facade';
-const facade = new Facade();
+import controller from '../../global/controllers/SessionController';
+
 const sessionRoutes = Router();
 
-sessionRoutes.post('/login', facade.create);
-sessionRoutes.post('/logout', facade.delete);
+sessionRoutes.post('/', controller.login);
 
 export default sessionRoutes;

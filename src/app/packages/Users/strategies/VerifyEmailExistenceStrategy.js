@@ -1,23 +1,26 @@
 import AbstractStrategy from '../../../global/abstract/AbstractStrategy';
-import CustomError from '../../../global/classes/CustomError';
-import UserRepository from '../../../global/repositories/UserRepository';
 
 export default class VerifyEmailExistenceStrategy extends AbstractStrategy {
-	constructor() {
+	constructor(userRepository) {
 		super();
+		this.userRepository = userRepository;
 	}
 
 	async execute(data) {
 		const { email } = data;
 
 		if (!email) {
-			throw new CustomError('Email address not informed', 400);
+			this.throwError('Email address not informed', 400);
+			return error;
 		}
 
-		const user = await UserRepository.getByEmail(email);
+		const user = await this.userRepository.getByEmail(email);
 
 		if (user) {
-			throw new CustomError('Email address already in use', 400);
+			if (data.id && data.id !== user.id) {
+				this.throwError('Email address already in use', 400);
+				return error;
+			}
 		}
 	}
 }

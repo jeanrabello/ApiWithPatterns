@@ -1,17 +1,20 @@
+import CustomError from '../domains/CustomError';
+
 export default class AbstractFactory {
 	constructor(strategies, data) {
 		this.strategies = strategies;
-		this.data = data;
 		this.error = {};
 	}
 
-	async execute() {
+	async execute(data, loggedUserInfo) {
+		let result;
 		for (const strategy of this.strategies) {
-			const error = await strategy.execute(this.data);
-
-			if (error) {
-				return error;
+			if (result instanceof CustomError) {
+				throw result;
 			}
+			result = await strategy.execute(data, loggedUserInfo);
 		}
+
+		return result;
 	}
 }

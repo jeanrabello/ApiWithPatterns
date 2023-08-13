@@ -1,5 +1,4 @@
 import AbstractStrategy from '../../../global/abstract/AbstractStrategy';
-import CustomError from '../../../global/classes/CustomError';
 
 export default class ValidateAgeStrategy extends AbstractStrategy {
 	constructor() {
@@ -11,7 +10,8 @@ export default class ValidateAgeStrategy extends AbstractStrategy {
 			new Date().getFullYear() - new Date(data.birthDate).getFullYear() <
 			18
 		) {
-			throw new CustomError('Minimum age: 18 years', 400);
+			this.throwError('Minimum age: 18 years', 400);
+			return;
 		}
 	}
 }

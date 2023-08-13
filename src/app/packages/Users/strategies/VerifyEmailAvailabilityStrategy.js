@@ -13,7 +13,8 @@ export default class VerifyEmailAvailabilityStrategy extends AbstractStrategy {
 		const loggedUser = await UserRepository.getById(data.userId);
 
 		if (user && user.id != loggedUser.id) {
-			throw new Error('Email address already in use.');
+			this.throwError('Email address already in use.');
+			return;
 		}
 	}
 }

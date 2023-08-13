@@ -18,7 +18,6 @@ class User extends Model {
 				cpf: Sequelize.STRING,
 				email: Sequelize.STRING,
 				password: Sequelize.STRING,
-				passwordToHash: Sequelize.VIRTUAL,
 				phoneNumber: Sequelize.STRING,
 				genre: Sequelize.STRING,
 				filePath: Sequelize.STRING,
@@ -41,8 +40,14 @@ class User extends Model {
 		);
 
 		this.addHook('beforeSave', async (user) => {
-			if (user.passwordToHash) {
-				user.password = await bcrypt.hash(user.passwordToHash, 8);
+			if (user.password) {
+				user.password = await bcrypt.hash(user.password, 8);
+			}
+		});
+
+		this.addHook('beforeBulkUpdate', async ({ attributes }) => {
+			if (attributes.password) {
+				attributes.password = await bcrypt.hash(attributes.password, 8);
 			}
 		});
 

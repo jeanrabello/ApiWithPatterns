@@ -1,20 +1,19 @@
 import AbstractStrategy from '../../../global/abstract/AbstractStrategy';
-import CustomError from '../../../global/classes/CustomError';
 
 export default class VerifyPasswordStrategy extends AbstractStrategy {
 	constructor() {
 		super();
 	}
 
-	async execute(data) {
-		const { passwordToHash } = data.body;
-
-		if (!passwordToHash) {
-			throw new CustomError('Password not informed', 400);
+	async execute({ password }) {
+		if (!password) {
+			this.throwError('Password not informed', 400);
+			return;
 		}
 
-		if (passwordToHash.length < 8) {
-			throw new CustomError('The password must have 8 characters', 400);
+		if (password.length < 8) {
+			this.throwError('The password must have 8 characters', 400);
+			return;
 		}
 	}
 }

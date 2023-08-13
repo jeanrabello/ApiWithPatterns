@@ -7,10 +7,9 @@ Sequelize.useCLS(namespace);
 //Models
 import Statuses from '../app/global/models/Statuses';
 import User from '../app/global/models/User';
-import Route from '../app/global/models/Route';
 import Administrator from '../app/global/models/Administrator';
 
-const models = [Statuses, User, Route, Administrator];
+const models = [Statuses, User, Administrator];
 
 class Database {
 	constructor() {

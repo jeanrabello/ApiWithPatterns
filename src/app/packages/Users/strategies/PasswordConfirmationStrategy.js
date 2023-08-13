@@ -5,11 +5,10 @@ export default class PasswordConfirmationStrategy extends AbstractStrategy {
 		super();
 	}
 
-	async execute(data) {
-		const { passwordToHash, passwordConfirmation } = data.body;
-
-		if (passwordToHash !== passwordConfirmation) {
-			throw new Error('Password do not match');
+	async execute({ newPassword, passwordConfirmation }) {
+		if (newPassword !== passwordConfirmation) {
+			this.throwError('Senhas não coincidem.');
+			return;
 		}
 	}
 }

@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import Facade from '../../global/controllers/Facade';
+import controller from '../../global/controllers/StatusesController';
 
-const facade = new Facade();
 const statusRoutes = Router();
 
-statusRoutes.get('/:code', facade.getByCode);
+statusRoutes.get('/:code', controller.getByCode);
 
 export default statusRoutes;

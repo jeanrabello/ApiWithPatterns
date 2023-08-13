@@ -1,16 +1,13 @@
+import AbstractRepository from '../abstract/AbstractRepository';
 import User from '../models/User';
-import StatusesRepository from './StatusesRepository';
 
-class UserRepository {
+class UserRepository extends AbstractRepository {
 	constructor() {
-		this.createUser = this.createUser.bind(this);
-		this.getByCpf = this.getByCpf.bind(this);
-		this.updateUser = this.updateUser.bind(this);
-		this.updatePassword = this.updatePassword.bind(this);
+		super(User);
 	}
 
 	async createUser(data) {
-		const activeStatus = await StatusesRepository.getByCode('ATI');
+		const activeStatus = await this.getActiveStatusId();
 
 		return await User.create({
 			firstName: data.firstName,
@@ -18,63 +15,58 @@ class UserRepository {
 			birthDate: data.birthDate,
 			cpf: data.cpf,
 			email: data.email,
-			passwordToHash: data.passwordToHash,
+			password: data.password,
 			phoneNumber: data.phoneNumber,
 			genre: data.genre,
 			fileName: data.fileName ? data.fileName : null,
 			filePath: data.filePath ? data.filePath : null,
-			statusId: activeStatus.id,
+			statusId: activeStatus,
 		});
 	}
 
 	async updateUser(data) {
 		await User.update(
 			{
-				firstName: data.body.firstName,
-				lastName: data.body.lastName,
-				birthDate: data.body.birthDate,
-				email: data.body.email,
-				passwordToHash: data.body.passwordToHash,
-				phoneNumber: data.body.phoneNumber,
-				genre: data.body.genre,
+				firstName: data.firstName,
+				lastName: data.lastName,
+				birthDate: data.birthDate,
+				email: data.email,
+				phoneNumber: data.phoneNumber,
+				genre: data.genre,
 			},
 			{
 				where: {
-					id: data.userId,
+					id: data.id,
 				},
 			}
 		);
 
-		return await this.getById(data.userId);
+		return await this.getById(data.id);
 	}
 
-	async updatePassword(data) {
-		const user = await this.getById(data.userId);
-
-		await user.update(
+	async updatePassword(userId, password) {
+		return await User.update(
 			{
-				passwordToHash: data.body.passwordToHash,
+				password,
 			},
 			{
 				where: {
-					id: data.userId,
+					id: userId,
 				},
 			}
 		);
-
-		return user;
 	}
 
 	async deleteLogically(id) {
-		const inactiveStatus = await StatusesRepository.getByCode('INA');
+		const inactiveStatus = await this.getInactiveStatusId();
 
 		return await User.update(
 			{
-				statusId: inactiveStatus.id,
+				statusId: inactiveStatus,
 			},
 			{
 				where: {
-					id: id,
+					id,
 				},
 			}
 		);
@@ -82,6 +74,18 @@ class UserRepository {
 
 	async getById(id) {
 		return await User.findOne({
+			attributes: [
+				'id',
+				'firstName',
+				'lastName',
+				'birthDate',
+				'cpf',
+				'email',
+				'phoneNumber',
+				'genre',
+				'fileName',
+				'filePath',
+			],
 			where: {
 				id: id,
 			},
@@ -89,26 +93,38 @@ class UserRepository {
 	}
 
 	async getByCpf(cpf) {
-		const activeStatus = await StatusesRepository.getByCode('ATI');
+		const activeStatus = await this.getActiveStatusId();
 
 		return await User.findOne({
+			attributes: [
+				'id',
+				'firstName',
+				'lastName',
+				'birthDate',
+				'cpf',
+				'email',
+				'phoneNumber',
+				'genre',
+				'fileName',
+				'filePath',
+			],
 			where: {
 				cpf: cpf,
-				statusId: activeStatus.id,
+				statusId: activeStatus,
 			},
 		});
 	}
 
 	async getByEmail(email) {
-		const activeStatus = await StatusesRepository.getByCode('ATI');
+		const activeStatus = await this.getActiveStatusId();
 
 		return await User.findOne({
 			where: {
 				email: email,
-				statusId: activeStatus.id,
+				statusId: activeStatus,
 			},
 		});
 	}
 }
 
-export default new UserRepository();
+export default UserRepository.getInstance();

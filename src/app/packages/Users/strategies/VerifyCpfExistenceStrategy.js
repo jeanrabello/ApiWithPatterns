@@ -1,23 +1,24 @@
 import AbstractStrategy from '../../../global/abstract/AbstractStrategy';
-import CustomError from '../../../global/classes/CustomError';
-import UserRepository from '../../../global/repositories/UserRepository';
 
 export default class VerifyCpfExistenceStrategy extends AbstractStrategy {
-	constructor() {
+	constructor(userRepository) {
 		super();
+		this.userRepository = userRepository;
 	}
 
 	async execute(data) {
 		const { cpf } = data;
 
 		if (!cpf) {
-			throw new CustomError('CPF not informed', 400);
+			this.throwError('CPF not informed', 400);
+			return;
 		}
 
-		const user = await UserRepository.getByCpf(cpf);
+		const user = await this.userRepository.getByCpf(cpf);
 
 		if (user) {
-			throw new CustomError('CPF already in use', 400);
+			this.throwError('CPF already in use', 400);
+			return;
 		}
 	}
 }

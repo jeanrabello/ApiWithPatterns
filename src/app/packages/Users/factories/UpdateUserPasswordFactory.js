@@ -1,18 +1,20 @@
 import AbstractFactory from '../../../global/abstract/AbstractFactory';
-import PasswordConfirmationStrategy from '../strategies/PasswordConfirmationStrategy';
-import VerifyPasswordStrategy from '../strategies/VerifyPasswordStrategy';
-import VerifyUserPasswordStrategy from '../strategies/VerifyUserPasswordStrategy';
+import { UserRepository } from '../../../global/repositories';
+import {
+	UpdateUserPasswordStrategy,
+	PasswordConfirmationStrategy,
+	VerifyPasswordStrategy,
+	VerifyUserActualPasswordStrategy,
+} from '../strategies';
 
 class UpdateUserPasswordFactory extends AbstractFactory {
-	constructor(data) {
-		super(
-			[
-				new VerifyUserPasswordStrategy(),
-				new VerifyPasswordStrategy(),
-				new PasswordConfirmationStrategy(),
-			],
-			data
-		);
+	constructor() {
+		super([
+			new VerifyPasswordStrategy(),
+			new VerifyUserActualPasswordStrategy(UserRepository),
+			new PasswordConfirmationStrategy(),
+			new UpdateUserPasswordStrategy(UserRepository),
+		]);
 	}
 }
 

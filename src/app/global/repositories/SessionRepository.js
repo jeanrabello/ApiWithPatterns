@@ -3,15 +3,15 @@ import jwt from 'jsonwebtoken';
 import authConfig from '../../../config/auth.js';
 import AdministratorRepository from '../repositories/AdministratorRepository.js';
 import UserRepository from './UserRepository.js';
+import AbstractRepository from '../abstract/AbstractRepository.js';
 
-class SessionRepository {
+class SessionRepository extends AbstractRepository {
 	constructor() {
+		super();
 		this.create = this.create.bind(this);
-		this.delete = this.delete.bind(this);
 	}
 
 	async create(data) {
-		console.log(data.body);
 		const { email, password } = data.body;
 
 		const user = await UserRepository.getByEmail(email);
@@ -44,10 +44,6 @@ class SessionRepository {
 			),
 		};
 	}
-
-	async delete(data) {
-		// TODO: Logout implementation
-	}
 }
 
-export default new SessionRepository();
+export default SessionRepository.getInstance();

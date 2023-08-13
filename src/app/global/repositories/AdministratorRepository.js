@@ -1,19 +1,14 @@
+import AbstractRepository from '../abstract/AbstractRepository';
 import Administrator from '../models/Administrator';
 import StatusesRepository from './StatusesRepository';
 
-class AdministratorRepository {
-	constructor() {
-		this.createAdministrator = this.createAdministrator.bind(this);
-		this.getByUserId = this.getByUserId.bind(this);
-		this.deleteLogically = this.deleteLogically.bind(this);
-	}
-
+class AdministratorRepository extends AbstractRepository {
 	async createAdministrator(userId) {
-		const activeStatus = await StatusesRepository.getByCode('ATI');
+		const activeStatus = await this.getActiveStatusId();
 
 		return await Administrator.create({
 			userId: userId,
-			statusId: activeStatus.id,
+			statusId: activeStatus,
 		});
 	}
 
@@ -26,11 +21,11 @@ class AdministratorRepository {
 	}
 
 	async deleteLogically(userId) {
-		const inactiveStatus = await StatusesRepository.getByCode('INA');
+		const inactiveStatus = await this.getInactiveStatusId();
 
 		await Administrator.update(
 			{
-				statusId: inactiveStatus.id,
+				statusId: inactiveStatus,
 			},
 			{
 				where: {
@@ -43,4 +38,4 @@ class AdministratorRepository {
 	}
 }
 
-export default new AdministratorRepository();
+export default AdministratorRepository.getInstance();

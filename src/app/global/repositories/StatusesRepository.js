@@ -1,10 +1,7 @@
+import AbstractRepository from '../abstract/AbstractRepository';
 import Statuses from '../models/Statuses';
 
-class StatusesRepository {
-	constructor() {
-		this.getByCode = this.getByCode.bind(this);
-	}
-
+class StatusesRepository extends AbstractRepository {
 	async getByCode(code) {
 		return await Statuses.findOne({
 			where: {
@@ -14,4 +11,4 @@ class StatusesRepository {
 	}
 }
 
-export default new StatusesRepository();
+export default StatusesRepository.getInstance();
