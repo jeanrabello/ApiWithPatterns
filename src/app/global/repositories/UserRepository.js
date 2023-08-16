@@ -125,6 +125,21 @@ class UserRepository extends AbstractRepository {
 			},
 		});
 	}
+
+	async suspendLogically(id) {
+		const suspendedStatus = await this.getSuspendedStatusId();
+
+		return await User.update(
+			{
+				statusId: suspendedStatus,
+			},
+			{
+				where: {
+					id,
+				},
+			}
+		);
+	}
 }
 
 export default UserRepository.getInstance();

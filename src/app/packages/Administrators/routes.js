@@ -5,6 +5,6 @@ const adminRoutes = Router();
 
 adminRoutes.post('/', controller.create);
 adminRoutes.get('/:userId', controller.getByUserId);
-adminRoutes.delete('/:userId', controller.deleteLogically);
+adminRoutes.delete('/:id', controller.deleteLogically);
 
 export default adminRoutes;

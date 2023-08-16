@@ -1,36 +1,62 @@
-import AdministratorRepository from '../repositories/AdministratorRepository';
+import {
+	CreateAdminFactory,
+	SuspendLogicallyByUserIdFactory,
+	GetAdministratorByUserIdFactory,
+} from '../../packages/Administrators/factories';
+import AbstractController from '../abstract/AbstractController';
+import { Administrator, User } from '../domains';
 
-class AdministratorController {
-	constructor() {}
-
-	async create(data) {
-		const userId = data.body.userId || data.params.userId;
-
-		if (!userId) {
-			throw new Error('User ID not informed');
-		}
-
-		return await AdministratorRepository.createAdministrator(userId);
+class AdministratorController extends AbstractController {
+	constructor() {
+		super();
+		this.create = this.create.bind(this);
+		this.getByUserId = this.getByUserId.bind(this);
+		this.deleteLogically = this.deleteLogically.bind(this);
 	}
 
-	async getByUserId(data) {
-		const userId = data.body.userId || data.params.userId;
+	async create(req, res, next) {
+		try {
+			let admin = new Administrator(req.body);
 
-		if (!userId) {
-			throw new Error('User ID not informed');
+			const factory = new CreateAdminFactory();
+			const result = await factory.execute(admin, {
+				userId: req.userId,
+				isAdmin: req.isAdmin,
+			});
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
 		}
-
-		return await AdministratorRepository.getByUserId(userId);
 	}
 
-	async deleteLogically(data) {
-		const userId = data.body.userId || data.params.userId;
+	async getByUserId(req, res, next) {
+		try {
+			let admin = new Administrator(req.params);
 
-		if (!userId) {
-			throw new Error('User ID not informed');
+			const factory = new GetAdministratorByUserIdFactory();
+			const result = await factory.execute(admin, {
+				userId: req.userId,
+				isAdmin: req.isAdmin,
+			});
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
 		}
+	}
 
-		return await AdministratorRepository.deleteLogically(userId);
+	async deleteLogically(req, res, next) {
+		try {
+			let user = new User(req.params);
+
+			const factory = new SuspendLogicallyByUserIdFactory();
+			const result = await factory.execute(user, {
+				userId: req.userId,
+				isAdmin: req.isAdmin,
+			});
+			res.json(result);
+		} catch (error) {
+			this.handleError(res, error);
+		}
 	}
 }
 

@@ -5,7 +5,7 @@ const namespace = cls.createNamespace('my-transaction-ns');
 Sequelize.useCLS(namespace);
 
 //Models
-import Statuses from '../app/global/models/Statuses';
+import Statuses from '../app/global/models/Status';
 import User from '../app/global/models/User';
 import Administrator from '../app/global/models/Administrator';
 

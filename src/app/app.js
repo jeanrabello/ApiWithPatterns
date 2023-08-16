@@ -8,7 +8,6 @@ import transactionMiddleware from './global/middlewares/transactions';
 import errorTreatmentMiddleware from './global/middlewares/errorTreatment';
 
 //Routes
-import statusRoutes from './packages/Statuses/routes.js';
 import userRoutes from './packages/Users/routes.js';
 import adminRoutes from './packages/Administrators/routes';
 import sessionRoutes from './packages/Sessions/routes';
@@ -28,9 +27,8 @@ class App {
 	}
 
 	routes() {
-		this.server.use('/app/status', statusRoutes);
 		this.server.use('/app/user', userRoutes);
-		this.server.use('/app/admin', adminRoutes);
+		this.server.use('/app/admin', authMiddleware, adminRoutes);
 		this.server.use('/app/session', sessionRoutes);
 	}
 }

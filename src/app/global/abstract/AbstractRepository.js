@@ -1,5 +1,5 @@
 import { STATUS } from '../../constants';
-import StatusesRepository from '../repositories/StatusesRepository';
+import Status from '../models/Status';
 
 export default class AbstractRepository {
 	constructor(model) {
@@ -14,18 +14,29 @@ export default class AbstractRepository {
 	}
 
 	async getActiveStatusId() {
-		return (await StatusesRepository.getByCode(STATUS.ACTIVE)).id;
+		return (await Status.findOne({ where: { code: STATUS.ACTIVE } })).id;
 	}
 
 	async getInactiveStatusId() {
-		return (await StatusesRepository.getByCode(STATUS.INACTIVE)).id;
+		return (await Status.findOne({ where: { code: STATUS.INACTIVE } })).id;
 	}
 
 	async getSuspendedStatusId() {
-		return (await StatusesRepository.getByCode(STATUS.SUSPENDED)).id;
+		return (await Status.findOne({ where: { code: STATUS.SUSPENDED } })).id;
 	}
 
 	async count(options) {
 		return await this.model.count(options);
+	}
+
+	async findById(id) {
+		return await this.model.findOne({ where: { id } });
+	}
+
+	async findByUserId(userId) {
+		const activeStatus = await this.getActiveStatusId();
+		return await this.model.findOne({
+			where: { userId, statusId: activeStatus },
+		});
 	}
 }

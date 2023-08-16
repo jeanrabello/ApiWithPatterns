@@ -1,10 +1,12 @@
 import AbstractFactory from '../../../global/abstract/AbstractFactory';
 import UserRepository from '../../../global/repositories/UserRepository';
-import CreateUserStrategy from '../strategies/CreateUserStrategy';
-import ValidateAgeStrategy from '../strategies/ValidateAgeStrategy';
-import VerifyCpfExistenceStrategy from '../strategies/VerifyCpfExistenceStrategy';
-import VerifyEmailExistenceStrategy from '../strategies/VerifyEmailExistenceStrategy';
-import VerifyPasswordStrategy from '../strategies/VerifyPasswordStrategy';
+import {
+	CreateUserStrategy,
+	ValidateAgeStrategy,
+	VerifyCpfExistenceStrategy,
+	VerifyEmailExistenceStrategy,
+	VerifyPasswordStrategy,
+} from '../strategies';
 
 class CreateUserFactory extends AbstractFactory {
 	constructor() {

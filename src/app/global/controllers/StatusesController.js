@@ -1,4 +1,4 @@
-import StatusesRepository from '../repositories/StatusesRepository';
+import StatusRepository from '../repositories/StatusRepository';
 
 class StatusesController {
 	constructor() {}
@@ -10,7 +10,7 @@ class StatusesController {
 			throw new Error('Code not informed');
 		}
 
-		return await StatusesRepository.getByCode(code);
+		return await StatusRepository.getByCode(code);
 	}
 }
 

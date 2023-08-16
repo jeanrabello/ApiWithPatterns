@@ -8,7 +8,6 @@ import {
 	UpdateUserFactory,
 	UpdateUserPasswordFactory,
 } from '../../packages/Users/factories';
-import UserRepository from '../repositories/UserRepository';
 
 class UserController extends AbstractController {
 	constructor() {

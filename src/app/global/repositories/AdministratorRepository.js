@@ -1,8 +1,11 @@
 import AbstractRepository from '../abstract/AbstractRepository';
 import Administrator from '../models/Administrator';
-import StatusesRepository from './StatusesRepository';
 
 class AdministratorRepository extends AbstractRepository {
+	constructor() {
+		super(Administrator);
+	}
+
 	async createAdministrator(userId) {
 		const activeStatus = await this.getActiveStatusId();
 
